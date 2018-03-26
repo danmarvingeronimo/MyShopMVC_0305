@@ -1,0 +1,47 @@
+﻿@model MyShopMVC.Models.BookViewModel
+
+@{
+    ViewBag.Title = "Store";
+}
+
+<div class="col-lg-3">
+    <div class="well">
+        <h3 class="text-center">Advanced Search</h3>
+        <div class="list-group">
+            <a href="Index" class="list-group-item">All Publishers;</a>
+            @foreach (var item in Model.Publishers)
+            {
+                <a href="Index?c=@item.PubID" class="list-group-item">
+                    <span class="badge">@item.TotalCount</span>
+                    @item.PublisherName
+                </a>
+            }
+        </div>
+    </div>
+</div>
+<div class="col-lg-9">
+    <h1 class="text-center">My Store</h1>
+    <hr />
+    @foreach (var item in Model.BookTitle)
+    {
+        <div class="col-lg-4">
+            <a href="@Url.Action("Details", "Store", new {id = item.ID})">
+                <div class="thumbnail">
+                    <div class="caption">
+                        <h3 class="text-center">
+                            @item.TitleName 
+                        </h3>
+                        <p>
+                            Publisher: @item.Publisher
+                            Author: @item.Author
+                            <h2>Php @item.TitlePrice.ToString("#,##0.00")</h2>
+                        </p>
+                        <hr />
+                        <a href="@Url.Action("AddToCart", "Store",  new { id=item.ID })" name="addtocart" class="btn btn-info btn btn-block"
+                           value="Add to Cart">Add To Cart</a>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+</div>

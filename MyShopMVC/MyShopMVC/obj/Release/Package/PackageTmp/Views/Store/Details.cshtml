@@ -1,0 +1,36 @@
+﻿@model MyShopMVC.Models.ProductsModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>@Model.Name (@Model.Code)</h2>
+
+<p>
+    Category: <a href='../Index?c=@Model.CatID'>@Model.Category</a>
+    <hr/>
+
+</p>
+<div class="col-lg-6">
+    <img src="../../Images/Products/@Model.Image" class="img-circle img-responsive" alt="@Model.Name"/>
+</div>
+
+<div class="col-lg-6">
+    <p>
+        @Model.Description
+    </p>
+    <p>
+        <h3>
+            Php @Convert.ToDouble(Model.Price).ToString("#,##0.00")
+        </h3>
+       
+    </p>
+    <div class="input-group col-lg-6">
+        <input type="number" name="quantity" class="form-control" min="1" max="99" placeholder="Input quantity." required/>
+        <span class="input-group-btn">
+            <button name="submit" class="btn btn-success" value="Add to Cart">
+                Add To Cart
+            </button>
+        </span>
+    </div>
+</div>

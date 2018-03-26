@@ -1,0 +1,86 @@
+﻿@model IEnumerable<MyShopMVC.Models.UsersModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table id="myTable" class="table">
+    <thead>
+        <th>
+            @Html.DisplayNameFor(model => model.TypeID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            Full Name
+        </th>
+        <th>
+            Address
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Phone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Mobile)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>Actions</th>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LN),
+                    @Html.DisplayFor(modelItem => item.FN)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Street),
+                    @Html.DisplayFor(modelItem => item.Municipality),
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mobile)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit", "Users", new { id3 = item.ID })">
+                        Edit
+                    </a>
+                    <a href="@Url.Action("Delete", "Users", new { id = item.ID })"
+                       onclick='return confirm("Archive record?");'>
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a href="@Url.Action("PrintAll", "Users")" class="btn btn-info btn-lg"
+   onclick='return confirm("Generate report?");'>
+    Print
+</a>
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+    });
+</script>
