@@ -9,4 +9,7 @@
   <parameter name="MyCon2-Web.config Connection String" description="MyCon2 Connection String used in web.config by the application to access the database." defaultValue="Server=(local);Database=myshopdb;Integrated Security=true;" tags="SqlConnectionString">
     <parameterEntry kind="XmlFile" scope="C:\\Users\\11416622\\Downloads\\MyShopMVC_0305\\MyShopMVC\\MyShopMVC\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='MyCon2']/@connectionString" />
   </parameter>
+  <parameter name="MyCon3-Web.config Connection String" description="MyCon3 Connection String used in web.config by the application to access the database." defaultValue="Server=tcp:danmarvingeronimo.database.windows.net,1433;Initial Catalog=myshopdb;Persist Security Info=False;User ID=dmg;Password=Ajujuguu16;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\11416622\\Downloads\\MyShopMVC_0305\\MyShopMVC\\MyShopMVC\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='MyCon3']/@connectionString" />
+  </parameter>
 </parameters>
