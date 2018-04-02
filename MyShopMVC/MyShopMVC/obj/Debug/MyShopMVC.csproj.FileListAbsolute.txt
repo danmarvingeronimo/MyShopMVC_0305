@@ -167,4 +167,3 @@ C:\Users\11416622\Downloads\MyShopMVC_0305\MyShopMVC\MyShopMVC\bin\Microsoft.Owi
 C:\Users\11416622\Downloads\MyShopMVC_0305\MyShopMVC\MyShopMVC\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 C:\Users\11416622\Downloads\MyShopMVC_0305\MyShopMVC\MyShopMVC\obj\Debug\MyShopMVC.dll
 C:\Users\11416622\Downloads\MyShopMVC_0305\MyShopMVC\MyShopMVC\obj\Debug\MyShopMVC.pdb
-C:\Users\11416622\Downloads\MyShopMVC_0305\MyShopMVC\MyShopMVC\obj\Debug\MyShopMVC.csprojResolveAssemblyReference.cache

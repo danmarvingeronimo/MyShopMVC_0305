@@ -196,5 +196,68 @@ namespace MyShopMVC.Controllers
                 }
             }
         }
+
+        double GetTotalAmount()
+        {
+            using (SqlConnection con = new SqlConnection(Helper.GetConnection()))
+            {
+                con.Open();
+                string SQL = @"SELECT SUM(Amount) FROM OrderDetails WHERE OrderNo=@OrderNo AND UserID=@UserID HAVING COUNT(DetailID) > 0";
+                
+                using (SqlCommand cmd = new SqlCommand (SQL, con))
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", 0);
+                    cmd.Parameters.AddWithValue("@UserID", 1);
+                    return cmd.ExecuteScalar() == null ? 0 : Convert.ToDouble((decimal)cmd.ExecuteScalar());
+                }
+            }
+        }
+
+
+        public ActionResult Cart()
+        {
+            var list = new List<CartModel>();
+            using (SqlConnection con = new SqlConnection(Helper.GetConnection()))
+            {
+                con.Open();
+                string SQL = @"SELECT od.DetailID, p.ProductID, p.Image, p.Name, p.Code, c.Category, od.Price, od.Quantity, od.Amount 
+                              FROM OrderDetails od INNER JOIN Products p ON od.ProductID = p.ProductID 
+                                                   INNER JOIN Categories c ON p.CatID = c.CatID
+                                                   WHERE od.OrderNo=@OrderNo AND od.UserId=@UserID";
+
+                using (SqlCommand cmd = new SqlCommand(SQL, con))
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", 0);
+                    cmd.Parameters.AddWithValue("@UserID", 1);
+
+                    using (SqlDataReader data = cmd.ExecuteReader())
+                    {
+                        while(data.Read())
+                        {
+                            list.Add(new CartModel
+                            {
+                                DetailID = int.Parse(data["DetailID"].ToString()),
+                                ProductID = int.Parse(data["ProductID"].ToString()),
+                                Image = data["Image"].ToString(),
+                                Name = data["Name"].ToString(),
+                                Code = data["Code"].ToString(),
+                                Category = data["Category"].ToString(),
+                                Price = decimal.Parse(data["Price"].ToString()),
+                                Quantity = int.Parse(data["Quantity"].ToString()),
+                                Amount = decimal.Parse(data["Amount"].ToString())
+
+                            });
+                        }
+
+                        ViewBag.Gross = (GetTotalAmount() * .88).ToString("#,##0.00");
+                        ViewBag.VAT = (GetTotalAmount() * .12).ToString("#,##0.00");
+                        ViewBag.Total = GetTotalAmount().ToString("#,##0.00");
+
+                        return View(list);
+                    }
+                }
+            }
+  
+        }
     }
 }
