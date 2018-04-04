@@ -25,6 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -184,6 +185,7 @@
     <Compile Include="Models\AuthorsModel.cs" />
     <Compile Include="Models\BookViewModel.cs" />
     <Compile Include="Models\CartModel.cs" />
+    <Compile Include="Models\CheckoutViewModel.cs" />
     <Compile Include="Models\TitlesModel.cs" />
     <Compile Include="Models\CategoriesModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -259,6 +261,7 @@
     <Content Include="Views\Store\Details.cshtml" />
     <Content Include="Views\Book\Index.cshtml" />
     <Content Include="Views\Account\Cart.cshtml" />
+    <Content Include="Views\Account\Checkout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

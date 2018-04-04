@@ -131,6 +131,7 @@ namespace MyShopMVC.Controllers
 
         public ActionResult Profile()
         {
+
             if (Session["userid"] == null) // user has not logged in
                 return RedirectToAction("Login");
 
@@ -258,6 +259,177 @@ namespace MyShopMVC.Controllers
                 }
             }
   
+        }
+
+
+        List<CartModel> GetCart()
+        {
+            var list = new List<CartModel>();
+            using (SqlConnection con = new SqlConnection(Helper.GetConnection()))
+            {
+                con.Open();
+                string SQL = @"SELECT od.DetailID, p.ProductID, p.Image, p.Name, p.Code, c.Category, od.Price, od.Quantity, od.Amount 
+                              FROM OrderDetails od INNER JOIN Products p ON od.ProductID = p.ProductID 
+                                                   INNER JOIN Categories c ON p.CatID = c.CatID
+                                                   WHERE od.OrderNo=@OrderNo AND od.UserId=@UserID";
+
+                using (SqlCommand cmd = new SqlCommand(SQL, con))
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", 0);
+                    cmd.Parameters.AddWithValue("@UserID", 1);
+
+                    using (SqlDataReader data = cmd.ExecuteReader())
+                    {
+                        while (data.Read())
+                        {
+                            list.Add(new CartModel
+                            {
+                                DetailID = int.Parse(data["DetailID"].ToString()),
+                                ProductID = int.Parse(data["ProductID"].ToString()),
+                                Image = data["Image"].ToString(),
+                                Name = data["Name"].ToString(),
+                                Code = data["Code"].ToString(),
+                                Category = data["Category"].ToString(),
+                                Price = decimal.Parse(data["Price"].ToString()),
+                                Quantity = int.Parse(data["Quantity"].ToString()),
+                                Amount = decimal.Parse(data["Amount"].ToString())
+
+                            });
+                        }
+
+                        return list;
+                    }
+                }
+            }
+        }
+
+        List<UsersModel> GetCustomer()
+        {
+            var list = new List<UsersModel>();
+
+            
+
+            using (SqlConnection con = new SqlConnection(Helper.GetConnection()))
+            {
+                con.Open();
+                string query = @"SELECT Email, LastName, FirstName,
+                    Street, Municipality, City, Phone, Mobile,
+                    DateModified FROM Users
+                    WHERE UserID=@UserID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", 1); // Session["userid"].ToString()
+                    using (SqlDataReader data = cmd.ExecuteReader())
+                    {
+                        while (data.Read())
+                        {
+                            list.Add(new UsersModel
+                            { 
+                            Email = data["Email"].ToString(),
+                            LN = data["LastName"].ToString(),
+                            FN = data["FirstName"].ToString(),
+                            Street = data["Street"].ToString(),
+                            Municipality = data["Municipality"].ToString(),
+                            City = data["City"].ToString(),
+                            Phone = data["Phone"].ToString(),
+                            Mobile = data["Mobile"].ToString()
+
+
+                            });
+                            
+                        }
+                        return list;
+                    }
+                }
+            }
+
+
+        }
+
+        public ActionResult Checkout()
+        {
+            var record  = new CheckoutViewModel();
+            record.Cart = GetCart();
+            record.User = GetCustomer();
+            ViewBag.Gross = (GetTotalAmount() * .88).ToString("#,##0.00");
+            ViewBag.VAT = (GetTotalAmount() * .12).ToString("#,##0.00");
+            ViewBag.Total = GetTotalAmount().ToString("#,##0.00");
+
+            return View(record);
+
+        }
+
+        [HttpPost]
+        public ActionResult Checkout(FormCollection record)
+        {
+            #region Step 1 & 2: Insert order record, select last record
+
+            int orderNo = 0;
+            using (SqlConnection Rikka = new SqlConnection(Helper.GetConnection()))
+            {
+                Rikka.Open();
+                string Takanashi = @"INSERT INTO Orders VALUES (@UserID, @PaymentMethod, @DateAdded, @DateProcessed, @DateDelivered, @DateCompleted, @Status);
+                                    
+                                     SELECT TOP 1 OrderNo FROM Orders ORDER BY OrderNo DESC";
+
+                using (SqlCommand WickedEye = new SqlCommand(Takanashi, Rikka))
+                {
+                    WickedEye.Parameters.AddWithValue("@UserID", 1);
+                    WickedEye.Parameters.AddWithValue("@PaymentMethod", "Cash on Delivey");
+                    WickedEye.Parameters.AddWithValue("@DateAdded", DateTime.Now);
+                    WickedEye.Parameters.AddWithValue("@DateProcessed", DBNull.Value);
+                    WickedEye.Parameters.AddWithValue("@DateDelivered", DBNull.Value);
+                    WickedEye.Parameters.AddWithValue("@DateCompleted", DBNull.Value);
+
+                    WickedEye.Parameters.AddWithValue("@Status", "Pending");
+                    orderNo = (int)WickedEye.ExecuteScalar();
+
+
+
+                }
+
+            }
+
+            #endregion
+
+            #region Step 3: Update cart items (order details)
+            using (SqlConnection Rikka = new SqlConnection(Helper.GetConnection()))
+            {
+                Rikka.Open();
+                string Takanashi = @"UPDATE OrderDetails SET OrderNo=@OrderNo WHERE OrderNo=0 AND UserID=@UserID";
+
+                using (SqlCommand WickedEye = new SqlCommand(Takanashi, Rikka))
+                {
+                    WickedEye.Parameters.AddWithValue("@OrderNo", orderNo);
+                    WickedEye.Parameters.AddWithValue("@UserID", 1); //Session["userid'].ToString()
+                    WickedEye.ExecuteNonQuery();
+                }
+            }
+
+
+            #endregion
+
+            #region Step 4: Insert delivery record
+            using (SqlConnection Rikka = new SqlConnection(Helper.GetConnection()))
+            {
+                Rikka.Open();
+                string Takanashi = @"INSERT INTO Deliveries VALUES (@OrderNo, @Deadline, @DateDelivered, @Status)";
+
+                using (SqlCommand WickedEye = new SqlCommand(Takanashi, Rikka))
+                {
+                    WickedEye.Parameters.AddWithValue("@OrderNo", orderNo);
+                    WickedEye.Parameters.AddWithValue("@Deadline", DateTime.Now.AddDays(7));
+                    WickedEye.Parameters.AddWithValue("@DateDelivered", DBNull.Value);
+                    WickedEye.Parameters.AddWithValue("@Status", "Pending");
+
+
+                    WickedEye.ExecuteNonQuery();
+                }
+            }
+
+            #endregion
+
+            return RedirectToAction("Orders", "Account");
         }
     }
 }

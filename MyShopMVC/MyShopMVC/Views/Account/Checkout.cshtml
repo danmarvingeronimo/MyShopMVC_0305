@@ -1,0 +1,112 @@
+﻿@model MyShopMVC.Models.CheckoutViewModel
+
+@{
+    ViewBag.Title = "Checkout";
+}
+
+<h2>Checkout</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+<div class="form-horizontal">
+    <div class="col-lg-9">
+        <table class="table">
+            <tr>
+
+                <th>
+                    Image
+                </th>
+                <th>
+                    Name
+                </th>
+
+
+                <th>
+                    Price
+                </th>
+                <th>
+                    Quantity
+                </th>
+                <th>
+                    Amoount
+                </th>
+                
+            </tr>
+
+            @foreach (var item in Model.Cart)
+            {
+                <tr>
+
+
+                    <td>
+                        <a href="@Url.Action("Details", "Store", new { id = item.ProductID })">
+                            <img src="../../Images/Products/@item.Image" width="200" />
+
+                        </a>
+
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Details", "Store", new { id = item.ProductID })">
+                            <strong>
+                                @item.Name (@item.Code)
+                            </strong>
+                        </a>
+                        <br />
+                        <small>Category: @item.Category</small>
+                    </td>
+
+
+                    <td>
+                        Php @Convert.ToDouble(item.Price).ToString("#,##0.00")
+                    </td>
+                    <td>
+                        <input type="number" min="1" max="99" class="form-control" value="@item.Quantity" />
+                    </td>
+                    <td>
+                        Php @Convert.ToDouble(item.Amount).ToString("#,##0.00")
+                    </td>
+                    
+                </tr>
+            }
+
+        </table>
+
+    </div>
+    <div class="col-lg-3">
+        <div class="well">
+            <h3 class="text-center">Order Summary</h3>
+            <table class="table">
+                <tr>
+                    <td>Gross Amount:</td>
+                    <td>@ViewBag.Gross</td>
+                </tr>
+                <tr>
+                    <td>Vat (12%)</td>
+                    <td>@ViewBag.VAT</td>
+                </tr>
+                <tr>
+                    <td>Total Amount</td>
+                    <td>@ViewBag.Total</td>
+                </tr>
+            </table>
+            <hr />
+
+            <label class="control-label">Payment Method</label>
+            <select name="method" class="forn-control">
+                <option>Cash on Delivery</option>
+                <option>Credit Card</option>
+                <option>Bank Deposit</option>
+            </select>
+            <label class="control-label">
+                <input type="checkbox" required /> I have read and understood the terms and conditions of this website.
+            </label>
+
+
+            <button name="submit" type="submit" class="btn btn-block btn-lg btn-success">
+                Checkout
+            </button>
+        </div>
+    </div>
+</div>
+}
